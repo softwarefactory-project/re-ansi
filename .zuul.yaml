@@ -1,0 +1,5 @@
+- project:
+    check: &jobs
+      jobs:
+        - shake-factory-npm-test
+    gate: *jobs
