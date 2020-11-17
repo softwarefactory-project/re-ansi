@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c31c229d_f1786aa6",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 22
+      },
+      "writtenOn": "2020-11-17T21:52:42Z",
+      "side": 1,
+      "message": "Contribution*s*",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 12
+      },
+      "revId": "f4e0651dee566c7d37f558d1c480665bbf1fab47",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
