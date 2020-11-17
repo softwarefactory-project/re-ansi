@@ -2,6 +2,16 @@
 
 Ansi code to HTML
 
+## Features
+
+re-ansi supports:
+
+* Cursor movement: `\n`, line erase and `\r` line erase
+* SGR parameter: italic and bold
+* 3/4 bits [color code][ansi-color-code]
+
+For details, see the `AnsiCode.parse` function.
+
 ## Install
 
 Add to your `package.json`:
@@ -24,7 +34,7 @@ Add to your `bsconfig.json`:
 ]
 ```
 
-## Example
+## Usage
 
 In reason:
 
@@ -49,11 +59,24 @@ let make = () => (
 
 ## Contribute
 
+Contributions are most welcome, for example the project needs help to:
+
+- support more ANSI code.
+- enable custom colors, such as solarized, by changing the `fourBitColors` function to a property.
+
+Get started by running:
+
 ```sh
 git clone https://github.com/softwarefactory-project/re-ansi
 cd re-ansi
-npm install
-npm start
+yarn install
+yarn start
 ```
 
-Then build and run tests with `npm test`.
+Then build and run tests with `yarn test`.
+
+Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
+
+[ansi-color-code]: https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
+[reason-react]: https://reasonml.github.io/reason-react/docs/en/components
+[rescript-lang]: https://rescript-lang.org/docs/manual/v8.0.0/overview
