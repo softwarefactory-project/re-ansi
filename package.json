@@ -1,0 +1,25 @@
+{
+  "name": "@softwarefactory-project/re-ansi",
+  "version": "0.1.0",
+  "description": "ANSI code to HTML",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "test": "npm run build && node tests/Spec.bs.js"
+  },
+  "keywords": [
+    "ReasonReact",
+    "reason",
+    "reason-react",
+    "reasonml",
+    "bucklescript"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "reason-react": "^0.9.1"
+  },
+  "devDependencies": {
+    "react": "^17.0.1",
+    "bs-platform": "^8.2.0"
+  }
+}

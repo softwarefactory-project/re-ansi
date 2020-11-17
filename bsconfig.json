@@ -1,0 +1,18 @@
+{
+  "name": "@softwarefactory-project/re-ansi",
+  "reason": {
+    "react-jsx": 3
+  },
+  "sources": ["src", { "dir": "tests", "type": "dev" }],
+  "bsc-flags": ["-bs-super-errors", "-bs-no-version-header"],
+  "package-specs": [
+    {
+      "module": "commonjs",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "bs-dependencies": ["reason-react"],
+  "bs-dev-dependencies": [],
+  "refmt": 3
+}
