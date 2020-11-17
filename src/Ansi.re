@@ -143,6 +143,8 @@ module AnsiCode = {
       switch (codePoints) {
       // \n\x0d[1A\x0d[J
       | [10, 27, 91, 49, 65, 27, 91, 74, ..._] => (9, EraseLine->Some)
+      // [1K
+      | [91, 48, 75, ..._] => (4, EraseLine->Some)
       // [00m
       | [91, 48, 48]
       // [0m
@@ -162,6 +164,8 @@ module AnsiCode = {
           )
           ->Option.flatMap(colorCss => colorCss->Style->Some),
         )
+      // [__;_m
+      | [91, colorMode, colorValue, 59, style]
       // [0_;__m
       | [91, 48, style, 59, colorMode, colorValue]
       // [_;__m
