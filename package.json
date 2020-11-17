@@ -1,0 +1,37 @@
+{
+  "name": "@softwarefactory-project/re-ansi",
+  "version": "0.1.0",
+  "description": "ANSI code to HTML",
+  "files": ["README.md", "LICENSE", "bsconfig.json", "src"],
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/softwarefactory-project/re-ansi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://softwarefactory-project.io/r/software-factory/re-ansi.git"
+  },
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "test": "npm run build && node tests/Spec.bs.js"
+  },
+  "keywords": [
+    "ReasonReact",
+    "ansi",
+    "reason",
+    "reason-react",
+    "reasonml",
+    "rescript",
+    "bucklescript"
+  ],
+  "dependencies": {
+    "reason-react": "^0.9.1"
+  },
+  "peerDependencies": {
+    "bs-platform": "^8.2.0"
+  },
+  "main": "./src/Ansi.bs.js",
+  "devDependencies": {
+    "react": "^17.0.1",
+    "bs-platform": "^8.2.0"
+  }
+}
