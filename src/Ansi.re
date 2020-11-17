@@ -147,6 +147,17 @@ module AnsiCode = {
       | [91, 48, 48]
       // [0m
       | [91, 48] => (length, Clear->Some)
+      // [__m
+      | [91, colorMode, colorValue] as xs
+      // [1__m
+      | [91, 49, colorMode, colorValue] as xs => (
+          length,
+          ColorCss.get(
+            colorMode,
+            colorValue + (xs->List.length == 4 ? 10 : 0),
+          )
+          ->Option.flatMap(colorCss => colorCss->Style->Some),
+        )
       // [0_;__m
       | [91, 48, style, 59, colorMode, colorValue]
       // [_;__m

@@ -42,9 +42,9 @@ In javascript:
 ```javascript
 import Ansi from "@softwarefactory-project/re-ansi";
 
-let make = () => {
+let make = () => (
   <Ansi log="content..." />;
-};
+);
 ```
 
 ## Contribute
