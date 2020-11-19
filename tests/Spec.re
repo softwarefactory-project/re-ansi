@@ -35,10 +35,23 @@ let spec = [
   "Copying blob 15de\r\n\x1b[1A\x1b[JCopied"->testParse([Text("Copied")]),
   "bold: \x1b[1mtest\x1b[0m"
   ->testParse([Text("bold: "), withFont("bold", [Text("test")])]),
-  "test: \x1b[31mr\x1b[32ma\x1b[0m"
+  "multi\nline\nend"
+  ->testParse([
+      Text("multi"),
+      LineBreak,
+      Text("line"),
+      LineBreak,
+      Text("end"),
+    ]),
+  "test: \x1b[31mRED\x1b[32mGREEN\x1b[0m\x1b[33mYELLOW\x1b[0m"
   ->testParse([
       Text("test: "),
-      withColor("red", [Text("r"), withColor("green", [Text("a")])]),
+      withColor(
+        "red",
+        [Text("RED"), withColor("green", [Text("GREEN")])],
+      ),
+      Text(""),
+      withColor("yellow", [Text("YELLOW")]),
     ]),
 ];
 

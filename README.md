@@ -79,6 +79,10 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
 
+### 0.2.1
+
+- Fix Ansi.parse to return the full document instead of the last line
+
 ### 0.2.0
 
 - Fix a recursion limit in Ansi.parse for log bigger than 10MB
