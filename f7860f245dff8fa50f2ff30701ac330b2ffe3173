@@ -16,6 +16,24 @@
       "revId": "f7860f245dff8fa50f2ff30701ac330b2ffe3173",
       "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a0ba77b_0c321e4c",
+        "filename": "package.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7
+      },
+      "writtenOn": "2020-11-19T19:04:47Z",
+      "side": 0,
+      "message": "Yes see: https://forum.rescript-lang.org/t/how-to-publish-a-rescript-project-for-javascript-users/656",
+      "parentUuid": "7cf29dcf_b2ced950",
+      "revId": "f7860f245dff8fa50f2ff30701ac330b2ffe3173",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
     }
   ]
 }
