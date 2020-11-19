@@ -201,9 +201,9 @@ module AnsiCode = {
             ),
         )
 
-      | xs =>
-        Js.log2("Unknown ANSI sequence:", xs->List.toArray);
-        (1, None);
+      | _xs =>
+        //        Js.log2("Unknown ANSI sequence:", xs->List.toArray);
+        (1, None)
       };
     | _ => (0, None)
     };
@@ -245,14 +245,17 @@ module Document = {
 };
 
 // Convert a string to a document
-let rec parse = (txt: string): document => {
-  let length = txt->Js.String.length;
-  switch (txt->Document.parse(length, 0)) {
-  | (pos, Some(doc)) when pos == length => doc
-  | (pos, Some(doc)) =>
-    doc->List.concat(txt->Js.String.sliceToEnd(~from=pos)->parse)
-  | _ => []
+let parse = (txt: string): document => {
+  let rec go = (txt: string, acc: document) => {
+    let length = txt->Js.String.length;
+    switch (txt->Document.parse(length, 0)) {
+    | (pos, Some(doc)) when pos == length => doc
+    | (pos, Some(doc)) =>
+      txt->Js.String.sliceToEnd(~from=pos)->go(doc->List.concat(acc))
+    | _ => acc
+    };
   };
+  txt->go([]);
 };
 
 // Convert a document to a React.element
