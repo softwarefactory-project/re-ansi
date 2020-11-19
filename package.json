@@ -1,6 +1,6 @@
 {
   "name": "@softwarefactory-project/re-ansi",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "ANSI code to HTML",
   "files": ["README.md", "LICENSE", "bsconfig.json", "src"],
   "main": "./src/Ansi.bs.js",
@@ -29,7 +29,6 @@
     "bs-platform": "^8.2.0"
   },
   "devDependencies": {
-    "react": "^16.14.0",
-    "bs-platform": "^8.2.0"
+    "react": "^16.14.0"
   }
 }

@@ -77,6 +77,16 @@ Then build and run tests with `yarn test`.
 
 Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
+## Changes
+
+### 0.2.0
+
+- Fix a recursion limit in Ansi.parse for log bigger than 10MB
+
+### 0.1.3
+
+- Initial release
+
 [ansi-color-code]: https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
 [reason-react]: https://reasonml.github.io/reason-react/docs/en/components
 [rescript-lang]: https://rescript-lang.org/docs/manual/v8.0.0/overview
