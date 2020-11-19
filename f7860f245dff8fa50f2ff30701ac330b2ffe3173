@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "739a19f7_327f2536",
+        "filename": "src/Ansi.re",
+        "patchSetId": 2
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 6
+      },
+      "writtenOn": "2020-11-19T16:17:56Z",
+      "side": 1,
+      "message": "Expected comment",
+      "revId": "f7860f245dff8fa50f2ff30701ac330b2ffe3173",
+      "serverId": "6c1dc8ef-8b94-40e4-bd83-c2359d45ecc0",
+      "unresolved": false
+    }
+  ]
+}
