@@ -1,5 +1,5 @@
 - project:
     check: &jobs
       jobs:
-        - shake-factory-npm-test
+        - npm-test
     gate: *jobs
