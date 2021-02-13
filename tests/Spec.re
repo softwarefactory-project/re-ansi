@@ -53,6 +53,12 @@ let spec = [
       Text(""),
       withColor("yellow", [Text("YELLOW")]),
     ]),
+  "get1: http://example.com/test 200"
+  ->testParse([
+      Text("get1: "),
+      Link("http://example.com/test"),
+      Text(" 200"),
+    ]),
 ];
 
 Node.Process.exit(spec->Belt.List.every(x => x) ? 0 : 1);

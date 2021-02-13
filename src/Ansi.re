@@ -18,6 +18,7 @@
 type document = list(atom)
 and atom =
   | Text(string)
+  | Link(string)
   | LineBreak
   | DocStyle(ReactDOM.Style.t, document);
 
@@ -30,6 +31,7 @@ module AnsiCode = {
     | Clear
     | EraseLine
     | CarriageReturn
+    | HRef(string)
     | Style(ReactDOM.Style.t);
 
   // Convert a 4 bits color code to its css color: https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
@@ -124,9 +126,31 @@ module AnsiCode = {
       fontMode->int_of_cp->getFontStyle->Option.flatMap(getFontStyleCss);
   };
 
+  // Link management
+  module HttpLink = {
+    let linkRe = [%re "/^(http(s)?:\\/\\/[^\s]+)/"];
+
+    let get = (txt: string): parser(code) =>
+      linkRe
+      ->Js.Re.exec_(txt)
+      ->Option.flatMap(res =>
+          (
+            switch (res->Js.Re.captures) {
+            | [|url, _, _|] => url->Js.Nullable.toOption
+            | _ => None
+            }
+          )
+          ->Option.flatMap(url =>
+              (url->Js.String.length, url->HRef->Some)->Some
+            )
+        )
+      ->Option.getWithDefault((1, None));
+  };
+
   // Parse an ANSI code, returning the length of the sequence
   let parse = (txt: string, pos: int): parser(code) =>
     switch (Js.String.codePointAt(pos, txt)) {
+    | Some(0x68) => HttpLink.get(txt->Js.String.slice(~from=pos, ~to_=512))
     | Some(0x0a) => (1, CarriageReturn->Some)
     | Some(0x0d)
     | Some(0x1b) =>
@@ -219,7 +243,7 @@ module Document = {
       switch (pos == length, txt->AnsiCode.parse(pos)) {
       // we reached the end of the txt
       | (true, _) => (pos, [text(txt, prev, pos)]->Some)
-      // current codepoint is an ANSI code
+      // current codepoint is an ANSI code or a HRef
       | (_, (length, Some(code))) =>
         let prevElem = txt->text(prev, pos);
         let pos = pos + length;
@@ -227,6 +251,7 @@ module Document = {
         | Clear => (pos, [prevElem]->Some)
         | EraseLine => pos->go(pos)
         | CarriageReturn => (pos, [prevElem, LineBreak]->Some)
+        | HRef(link) => (pos, [prevElem, link->Link]->Some)
         | Style(style) =>
           // recursively parse the stylized block
           switch (pos->go(pos)) {
@@ -260,13 +285,28 @@ let parse = (txt: string): document => {
 
 // Convert a document to a React.element
 let render = (doc: document): React.element => {
-  let rec go = (xs: document, idx: int, acc: list(React.element)): React.element =>
+  let rec go =
+          (xs: document, idx: int, acc: list(React.element)): React.element =>
     switch (xs) {
     | [] => acc->List.reverse->List.toArray->ReasonReact.array
-    | [LineBreak, ...xs] => xs->go(idx + 1, acc->List.add(<br key={idx->string_of_int} />))
-    | [Text(txt), ...xs] => xs->go(idx + 1, acc->List.add(txt->React.string))
+    | [LineBreak, ...xs] =>
+      xs->go(idx + 1, acc->List.add(<br key={idx->string_of_int} />))
+    | [Text(txt), ...xs] =>
+      xs->go(idx + 1, acc->List.add(txt->React.string))
+    | [Link(href), ...xs] =>
+      xs->go(
+        idx + 1,
+        acc->List.add(
+          <a key={idx->string_of_int} href> href->React.string </a>,
+        ),
+      )
     | [DocStyle(style, elems), ...xs] =>
-      xs->go(idx + 1, acc->List.add(<span key={idx->string_of_int} style> {elems->go(0, [])} </span>))
+      xs->go(
+        idx + 1,
+        acc->List.add(
+          <span key={idx->string_of_int} style> {elems->go(0, [])} </span>,
+        ),
+      )
     };
   doc->go(0, []);
 };
