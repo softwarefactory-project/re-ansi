@@ -260,15 +260,15 @@ let parse = (txt: string): document => {
 
 // Convert a document to a React.element
 let render = (doc: document): React.element => {
-  let rec go = (xs: document, acc: list(React.element)): React.element =>
+  let rec go = (xs: document, idx: int, acc: list(React.element)): React.element =>
     switch (xs) {
     | [] => acc->List.reverse->List.toArray->ReasonReact.array
-    | [LineBreak, ...xs] => xs->go(acc->List.add(<br />))
-    | [Text(txt), ...xs] => xs->go(acc->List.add(txt->React.string))
+    | [LineBreak, ...xs] => xs->go(idx + 1, acc->List.add(<br key={idx->string_of_int} />))
+    | [Text(txt), ...xs] => xs->go(idx + 1, acc->List.add(txt->React.string))
     | [DocStyle(style, elems), ...xs] =>
-      xs->go(acc->List.add(<span style> {elems->go([])} </span>))
+      xs->go(idx + 1, acc->List.add(<span key={idx->string_of_int} style> {elems->go(0, [])} </span>))
     };
-  doc->go([]);
+  doc->go(0, []);
 };
 
 // The react component
