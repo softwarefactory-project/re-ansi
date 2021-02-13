@@ -79,6 +79,11 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
 
+### 0.3.0
+
+- Add unique keys to react list elements
+- Create a href elements for http links
+
 ### 0.2.1
 
 - Fix Ansi.parse to return the full document instead of the last line
