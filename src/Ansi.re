@@ -112,9 +112,13 @@ module AnsiCode = {
       switch (fontMode) {
       | 0 => Regular->Some
       | 1 => "bold"->addWeight->FontStyle->Some
+      | 2 => "lighter"->addWeight->FontStyle->Some
       | 3 => "italic"->addStyle->FontStyle->Some
       | 4 => "underline"->addDecoration->FontStyle->Some
+      // TODO: add blink for 5/6
       | 7 => Regular->Some
+      // 8 is for hiding, not widely supported.
+      | 9 => "line-through"->addDecoration->FontStyle->Some
       | _ => None
       };
 
