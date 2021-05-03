@@ -4,6 +4,9 @@ let withColor = (color, rest) =>
 let withFont = (style, rest) =>
   Ansi.DocStyle(ReactDOM.Style.make(~fontWeight=style, ()), rest);
 
+let withDecoration = (textDecoration, rest) =>
+  Ansi.DocStyle(ReactDOM.Style.make(~textDecoration, ()), rest);
+
 let generateFile = (size: int): string => {
   let codePointListToString = (xs: list(int)): string => {
     let rec go = (xs, acc) =>
@@ -33,6 +36,11 @@ let testParse = (txt, expected) => {
 let spec = [
   generateFile(10000000)->Ansi.parse->Belt.List.length > 0,
   "Copying blob 15de\r\n\x1b[1A\x1b[JCopied"->testParse([Text("Copied")]),
+  "zookeeper: \x1b[4munderlined"
+  ->testParse([
+      Text("zookeeper: "),
+      withDecoration("underline", [Text("underlined")]),
+    ]),
   "bold: \x1b[1mtest\x1b[0m"
   ->testParse([Text("bold: "), withFont("bold", [Text("test")])]),
   "multi\nline\nend"
