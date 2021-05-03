@@ -79,6 +79,10 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
 
+### 0.4.0
+
+- Add support for underline text decoration
+
 ### 0.3.0
 
 - Add unique keys to react list elements

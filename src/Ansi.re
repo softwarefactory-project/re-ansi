@@ -62,6 +62,7 @@ module AnsiCode = {
   let combine = (css1, css2) => ReactDOM.Style.combine(css1, css2);
   let addWeight = fontWeight => ReactDOM.Style.make(~fontWeight, ());
   let addStyle = fontStyle => ReactDOM.Style.make(~fontStyle, ());
+  let addDecoration = textDecoration => ReactDOM.Style.make(~textDecoration, ());
   let int_of_cp = c => c - 48;
 
   // Color management
@@ -112,6 +113,7 @@ module AnsiCode = {
       | 0 => Regular->Some
       | 1 => "bold"->addWeight->FontStyle->Some
       | 3 => "italic"->addStyle->FontStyle->Some
+      | 4 => "underline"->addDecoration->FontStyle->Some
       | 7 => Regular->Some
       | _ => None
       };
@@ -173,6 +175,7 @@ module AnsiCode = {
       | [91, 48, 48]
       // [0m
       | [91, 48] => (length, Clear->Some)
+      // [_m
       | [91, style] => (
           length,
           style->FontCss.get->Option.flatMap(style => style->Style->Some),
