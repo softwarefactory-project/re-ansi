@@ -81,7 +81,8 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ### 0.4.0
 
-- Add support for underline text decoration
+- Add support for underline and line-through text decoration
+- Add support for lighter font style
 
 ### 0.3.0
 
