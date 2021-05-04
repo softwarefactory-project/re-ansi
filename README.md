@@ -7,8 +7,10 @@ Ansi code to HTML
 re-ansi supports:
 
 * Cursor movement: `\n`, line erase and `\r` line erase
-* SGR parameter: italic and bold
+* SGR parameter: italic, bold, underline and line-through
 * 3/4 bits [color code][ansi-color-code]
+
+re-ansi removes styles on new lines, so that a `<br />` can't be nested inside `<span style>` elements.
 
 For details, see the `AnsiCode.parse` function.
 
@@ -81,25 +83,26 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ### 0.4.0
 
-- Add support for underline and line-through text decoration
-- Add support for lighter font style
+- Add support for underline and line-through text decoration.
+- Add support for lighter font style.
+- Add initial support for color reset.
 
 ### 0.3.0
 
-- Add unique keys to react list elements
-- Create a href elements for http links
+- Add unique keys to react list elements.
+- Create a href elements for http links.
 
 ### 0.2.1
 
-- Fix Ansi.parse to return the full document instead of the last line
+- Fix Ansi.parse to return the full document instead of the last line.
 
 ### 0.2.0
 
-- Fix a recursion limit in Ansi.parse for log bigger than 10MB
+- Fix a recursion limit in Ansi.parse for log bigger than 10MB.
 
 ### 0.1.3
 
-- Initial release
+- Initial release.
 
 [ansi-color-code]: https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
 [reason-react]: https://reasonml.github.io/reason-react/docs/en/components
