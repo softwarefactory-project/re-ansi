@@ -81,6 +81,10 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
 
+### 0.5.0
+
+- Add support for `[m` and `[K`.
+
 ### 0.4.0
 
 - Add support for underline and line-through text decoration.

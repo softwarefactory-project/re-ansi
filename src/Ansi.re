@@ -174,12 +174,16 @@ module AnsiCode = {
       switch (codePoints) {
       // \n\x0d[1A\x0d[J
       | [10, 27, 91, 49, 65, 27, 91, 74, ..._] => (9, EraseLine->Some)
-      // [1K
-      | [91, 48, 75, ..._] => (4, EraseLine->Some)
+      // [_K
+      | [91, _, 75, ..._] => (4, EraseLine->Some)
+      // [K
+      | [91, 75, ..._] => (3, EraseLine->Some)
       // [00m
       | [91, 48, 48]
       // [0m
-      | [91, 48] => (length, Clear->Some)
+      | [91, 48]
+      // [m
+      | [91] => (length, Clear->Some)
       // [_m
       | [91, style] => (
           length,

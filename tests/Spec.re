@@ -41,8 +41,14 @@ let spec = [
       Text("zookeeper: "),
       withDecoration("underline", [Text("underlined")]),
     ]),
-  "bold: \x1b[1mtest\x1b[0m"
-  ->testParse([Text("bold: "), withFont("bold", [Text("test")])]),
+  "bold: \x1b[1mtest\x1b[m over"
+  ->testParse([Text("bold: "), withFont("bold", [Text("test")]), Text(" over")]),
+  "a\x1b[0Kb"
+  ->testParse([Text("b")]),
+  "a\x1b[Kb"
+  ->testParse([Text("b")]),
+  "prev\x1b[1A\x1b[KStatus output"
+  ->testParse([Text("Status output")]),
   "multi\nline\nend"
   ->testParse([
       Text("multi"),
