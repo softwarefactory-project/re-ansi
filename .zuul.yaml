@@ -1,5 +1,14 @@
 - project:
     check: &jobs
       jobs:
-        - npm-test
+        - run-test-command:
+            vars:
+              test_command:
+                - sudo npm install -g yarn
+                - yarn install
+                - yarn test
+            nodeset:
+              nodes:
+                - name: container
+                  label: zuul-worker-javascript
     gate: *jobs

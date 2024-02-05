@@ -1,6 +1,9 @@
 let withColor = (color, rest) =>
   Ansi.DocStyle(ReactDOM.Style.make(~color, ()), rest);
 
+let withBrightColor = (color, rest) =>
+  Ansi.DocStyle(ReactDOM.Style.make(~color, ~fontWeight="bold", ()), rest);
+
 let withFont = (style, rest) =>
   Ansi.DocStyle(ReactDOM.Style.make(~fontWeight=style, ()), rest);
 
@@ -73,6 +76,8 @@ let spec = [
       Link("http://example.com/test"),
       Text(" 200"),
     ]),
+  "bright: \x1b[90mtest\x1b[m"
+  ->testParse([Text("bright: "), withBrightColor("grey", [Text("test")])]),
 ];
 
 Node.Process.exit(spec->Belt.List.every(x => x) ? 0 : 1);

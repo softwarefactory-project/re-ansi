@@ -59,6 +59,21 @@ module AnsiCode = {
       None;
     };
 
+  let threeBitColors = (code: int): option(string) =>
+    switch (code) {
+    | 00 => "grey"->Some
+    | 01 => "red"->Some
+    | 02 => "green"->Some
+    | 03 => "yellow"->Some
+    | 04 => "blue"->Some
+    | 05 => "magenta"->Some
+    | 06 => "cyan"->Some
+    | 07 => "white"->Some
+    | _ =>
+      Js.log2("Unknown color value:", code);
+      None;
+    };
+
   // Css utility
   let combine = (css1, css2) => ReactDOM.Style.combine(css1, css2);
   let addWeight = fontWeight => ReactDOM.Style.make(~fontWeight, ());
@@ -70,11 +85,12 @@ module AnsiCode = {
   module ColorCss = {
     type t =
       | Foreground(int)
+      | BrightForeground(int)
       | Background(int);
     let getColorStyle = (colorMode: int, colorValue: int): option(t) =>
       switch (colorMode) {
-      | 3
-      | 9 => colorValue->Foreground->Some
+      | 3 => colorValue->Foreground->Some
+      | 9 => colorValue->BrightForeground->Some
       | 4
       | 0 => colorValue->Background->Some
       | _ =>
@@ -88,6 +104,10 @@ module AnsiCode = {
         v
         ->fourBitColors
         ->Option.flatMap(color => ReactDOM.Style.make(~color, ())->Some)
+      | BrightForeground(v) =>
+        v
+        ->threeBitColors
+        ->Option.flatMap(color => ReactDOM.Style.make(~color, ~fontWeight="bold", ())->Some)
       | Background(v) =>
         v
         ->fourBitColors

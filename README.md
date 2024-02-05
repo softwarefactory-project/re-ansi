@@ -81,6 +81,10 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
 
+### 0.6.0
+
+- Fix support for bright colors.
+
 ### 0.5.0
 
 - Add support for `[m` and `[K`.
