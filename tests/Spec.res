@@ -1,21 +1,21 @@
 let withColor = (color, rest) =>
-  Ansi.DocStyle(ReactDOM.Style.make(~color, ()), rest);
+  Ansi.DocStyle(ReactDOM.Style.make(~color, ()), rest->List.fromArray);
 
 let withBrightColor = (color, rest) =>
-  Ansi.DocStyle(ReactDOM.Style.make(~color, ~fontWeight="bold", ()), rest);
+  Ansi.DocStyle(ReactDOM.Style.make(~color, ~fontWeight="bold", ()), rest->List.fromArray);
 
 let withFont = (style, rest) =>
-  Ansi.DocStyle(ReactDOM.Style.make(~fontWeight=style, ()), rest);
+  Ansi.DocStyle(ReactDOM.Style.make(~fontWeight=style, ()), rest->List.fromArray);
 
 let withDecoration = (textDecoration, rest) =>
-  Ansi.DocStyle(ReactDOM.Style.make(~textDecoration, ()), rest);
+  Ansi.DocStyle(ReactDOM.Style.make(~textDecoration, ()), rest->List.fromArray);
 
 let generateFile = (size: int): string => {
-  let codePointListToString = (xs: list(int)): string => {
+  let codePointListToString = (xs: list<int>): string => {
     let rec go = (xs, acc) =>
       switch (xs) {
-      | [] => acc
-      | [x, ...xs] =>
+      | list{} => acc
+      | list{x, ...xs} =>
         xs->go(x->Js.String.fromCharCode->Js.String.concat(acc))
       };
     xs->go("");
@@ -23,15 +23,16 @@ let generateFile = (size: int): string => {
   Random.init(42);
   let rec go = (acc, sz) =>
     sz > 0 ? acc->Belt.List.add(Random.int(256))->go(sz - 1) : acc;
-  []->go(size)->codePointListToString;
+  list{}->go(size)->codePointListToString;
 };
 
 let testParse = (txt, expected) => {
   let parsed = txt->Ansi.parse;
-  parsed == expected
+  parsed == expected->List.fromArray
     ? true
     : {
       Js.log3(txt, "!=", expected);
+      Js.log2("got", parsed);
       false;
     };
 };
@@ -39,7 +40,7 @@ let testParse = (txt, expected) => {
 let spec = [
   generateFile(10000000)->Ansi.parse->Belt.List.length > 0,
   "Copying blob 15de\r\n\x1b[1A\x1b[JCopied"->testParse([Text("Copied")]),
-  "zookeeper: \x1b[4munderlined"
+  "zookeeper: \x1b[4munderlined\x1b[m"
   ->testParse([
       Text("zookeeper: "),
       withDecoration("underline", [Text("underlined")]),
@@ -80,4 +81,6 @@ let spec = [
   ->testParse([Text("bright: "), withBrightColor("grey", [Text("test")])]),
 ];
 
-Node.Process.exit(spec->Belt.List.every(x => x) ? 0 : 1);
+if !(spec->Belt.Array.every(x => x)) {
+  %raw(`process.exit(1)`)
+}

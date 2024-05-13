@@ -15,16 +15,14 @@
 // Ansi renders a log ANSI code to a React component
 
 // Document type
-type document = list(atom)
+type rec document = list<atom>
 and atom =
   | Text(string)
   | Link(string)
   | LineBreak
   | DocStyle(ReactDOM.Style.t, document);
 
-type parser('a) = (int, option('a));
-
-open Belt;
+type parser<'a> = (int, option<'a>);
 
 module AnsiCode = {
   type code =
@@ -35,7 +33,7 @@ module AnsiCode = {
     | Style(ReactDOM.Style.t);
 
   // Convert a 4 bits color code to its css color: https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
-  let fourBitColors = (code: int): option(string) =>
+  let fourBitColors = (code: int): option<string> =>
     switch (code) {
     | 00 => "black"->Some
     | 01 => "red"->Some
@@ -59,7 +57,7 @@ module AnsiCode = {
       None;
     };
 
-  let threeBitColors = (code: int): option(string) =>
+  let threeBitColors = (code: int): option<string> =>
     switch (code) {
     | 00 => "grey"->Some
     | 01 => "red"->Some
@@ -87,7 +85,7 @@ module AnsiCode = {
       | Foreground(int)
       | BrightForeground(int)
       | Background(int);
-    let getColorStyle = (colorMode: int, colorValue: int): option(t) =>
+    let getColorStyle = (colorMode: int, colorValue: int): option<t> =>
       switch (colorMode) {
       | 3 => colorValue->Foreground->Some
       | 9 => colorValue->BrightForeground->Some
@@ -98,7 +96,7 @@ module AnsiCode = {
         None;
       };
 
-    let getColorStyleCss = (color: t): option(ReactDOM.Style.t) =>
+    let getColorStyleCss = (color: t): option<ReactDOM.Style.t> =>
       switch (color) {
       | Foreground(v) =>
         v
@@ -116,7 +114,7 @@ module AnsiCode = {
           )
       };
 
-    let get = (colorMode: int, colorValue: int): option(ReactDOM.Style.t) =>
+    let get = (colorMode: int, colorValue: int): option<ReactDOM.Style.t> =>
       colorMode
       ->int_of_cp
       ->getColorStyle(colorValue->int_of_cp)
@@ -129,7 +127,7 @@ module AnsiCode = {
       | Regular
       | FontStyle(ReactDOM.Style.t);
 
-    let getFontStyle = (fontMode: int): option(t) =>
+    let getFontStyle = (fontMode: int): option<t> =>
       switch (fontMode) {
       | 0 => Regular->Some
       | 1 => "bold"->addWeight->FontStyle->Some
@@ -143,61 +141,66 @@ module AnsiCode = {
       | _ => None
       };
 
-    let getFontStyleCss = (font: t): option(ReactDOM.Style.t) =>
+    let getFontStyleCss = (font: t): option<ReactDOM.Style.t> =>
       switch (font) {
       | Regular => None
       | FontStyle(css) => css->Some
       };
 
-    let get = (fontMode: int): option(ReactDOM.Style.t) =>
+    let get = (fontMode: int): option<ReactDOM.Style.t> =>
       fontMode->int_of_cp->getFontStyle->Option.flatMap(getFontStyleCss);
   };
 
   // Link management
   module HttpLink = {
-    let linkRe = [%re "/^(http(s)?:\\/\\/[^\s]+)/"];
+    let linkRe = RegExp.fromString("^(http(s)?:\\/\\/[^\\s]+)");
 
-    let get = (txt: string): parser(code) =>
+    let get = (txt: string): parser<code> =>
       linkRe
-      ->Js.Re.exec_(txt)
-      ->Option.flatMap(res =>
-          (
-            switch (res->Js.Re.captures) {
-            | [|url, _, _|] => url->Js.Nullable.toOption
-            | _ => None
-            }
-          )
+      ->RegExp.exec(txt)
+      ->Option.flatMap(res => res->Array.get(0)
           ->Option.flatMap(url =>
               (url->Js.String.length, url->HRef->Some)->Some
             )
         )
-      ->Option.getWithDefault((1, None));
+      ->Option.getOr((1, None));
   };
 
   // Parse an ANSI code, returning the length of the sequence
-  let parse = (txt: string, pos: int): parser(code) =>
+  let parse = (txt: string, pos: int): parser<code> =>
     switch (Js.String.codePointAt(pos, txt)) {
     | Some(0x68) => HttpLink.get(txt->Js.String.slice(~from=pos, ~to_=512))
     | Some(0x0a) => (1, CarriageReturn->Some)
     | Some(0x0d)
     | Some(0x1b) =>
       // escape sequence begin
-      let rec cps = (idx: int, acc: list(int)): list(int) =>
-        switch (idx > 10, Js.String.codePointAt(pos + idx, txt)) {
-        | (false, Some(109)) => acc
-        | (false, Some(n)) => cps(idx + 1, acc->List.add(n))
-        | _ => acc
-        };
+      let codePoints = [];
 
-      let codePoints = 1->cps([])->List.reverse;
-      let length = codePoints->List.length + 2;
+      let rec readCodePoints = (idx: int) =>
+        switch (idx > 10, Js.String.codePointAt(pos + idx, txt)) {
+        | (false, Some(109)) => ()
+        | (false, Some(n)) => {
+          codePoints->Array.push(n);
+          readCodePoints(idx + 1)
+        }
+        | _ => ()
+        };
+      readCodePoints(1);
+
+      // use get for pattern match value, it's fine to use 'getUnsafe' because we'll get undefined value.
+      let get = (idx) => codePoints->Array.getUnsafe(idx)
+
+      // Add 2 to take the 0x1b and 109 into account
+      let length = codePoints->Array.length + 2;
       switch (codePoints) {
       // \n\x0d[1A\x0d[J
-      | [10, 27, 91, 49, 65, 27, 91, 74, ..._] => (9, EraseLine->Some)
+      | _ when
+        get(0) == 10 && get(1) == 27 && get(2) == 91 && get(3) == 49 &&
+        get(4) == 65 && get(5) == 27 && get(6) == 91 && get(7) == 74 => (9, EraseLine->Some)
       // [_K
-      | [91, _, 75, ..._] => (4, EraseLine->Some)
+      | _ when get(0) == 91 && get(2) == 75 => (4, EraseLine->Some)
       // [K
-      | [91, 75, ..._] => (3, EraseLine->Some)
+      | _ when get(0) == 91 && get(1) == 75 => (3, EraseLine->Some)
       // [00m
       | [91, 48, 48]
       // [0m
@@ -216,7 +219,7 @@ module AnsiCode = {
           length,
           ColorCss.get(
             colorMode,
-            colorValue + (xs->List.length == 4 ? 10 : 0),
+            colorValue + (xs->Array.length == 4 ? 10 : 0),
           )
           ->Option.flatMap(colorCss => colorCss->Style->Some),
         )
@@ -246,7 +249,7 @@ module AnsiCode = {
           length,
           ColorCss.get(cm1, cv1)
           ->Option.flatMap(colorCss1 =>
-              ColorCss.get(cm2, cv2 + (xs->List.length == 9 ? 10 : 0))
+              ColorCss.get(cm2, cv2 + (xs->Array.length == 9 ? 10 : 0))
               ->Option.flatMap(colorCss2 => {
                   let css = combine(colorCss1, colorCss2);
                   switch (style->FontCss.get) {
@@ -270,26 +273,26 @@ module Document = {
     txt->Js.String.slice(~from, ~to_)->Text;
 
   // Parse a document
-  let parse = (txt: string, length: int, pos: int): parser(document) => {
+  let parse = (txt: string, length: int, pos: int): parser<document> => {
     let rec go = (pos: int, prev: int) =>
       switch (pos == length, txt->AnsiCode.parse(pos)) {
       // we reached the end of the txt
-      | (true, _) => (pos, [text(txt, prev, pos)]->Some)
+      | (true, _) => (pos, list{text(txt, prev, pos)}->Some)
       // current codepoint is an ANSI code or a HRef
       | (_, (length, Some(code))) =>
         let prevElem = txt->text(prev, pos);
         let pos = pos + length;
         switch (code) {
-        | Clear => (pos, [prevElem]->Some)
+        | Clear => (pos, list{prevElem}->Some)
         | EraseLine => pos->go(pos)
-        | CarriageReturn => (pos, [prevElem, LineBreak]->Some)
-        | HRef(link) => (pos, [prevElem, link->Link]->Some)
+        | CarriageReturn => (pos, list{prevElem, LineBreak}->Some)
+        | HRef(link) => (pos, list{prevElem, link->Link}->Some)
         | Style(style) =>
           // recursively parse the stylized block
           switch (pos->go(pos)) {
           | (pos, Some(styled)) => (
               pos,
-              [prevElem, DocStyle(style, styled)]->Some,
+              list{prevElem, DocStyle(style, styled)}->Some,
             )
           | _ => (pos, None)
           }
@@ -303,7 +306,7 @@ module Document = {
 
 // Convert a string to a document
 let parse = (txt: string): document => {
-  let rec go = (txt: string, acc: list(document)) => {
+  let rec go = (txt: string, acc: list<document>) => {
     let length = txt->Js.String.length;
     switch (txt->Document.parse(length, 0)) {
     | (pos, Some(doc)) when pos == length => acc->List.add(doc)
@@ -312,39 +315,39 @@ let parse = (txt: string): document => {
     | _ => acc
     };
   };
-  txt->go([])->Belt.List.reverse->Belt.List.flatten;
+  txt->go(list{})->Belt.List.reverse->Belt.List.flatten;
 };
 
 // Convert a document to a React.element
 let render = (doc: document): React.element => {
   let rec go =
-          (xs: document, idx: int, acc: list(React.element)): React.element =>
+          (xs: document, idx: int, acc: list<React.element>): React.element =>
     switch (xs) {
-    | [] => acc->List.reverse->List.toArray->ReasonReact.array
-    | [LineBreak, ...xs] =>
+    | list{} => acc->List.reverse->List.toArray->React.array
+    | list{LineBreak, ...xs} =>
       xs->go(idx + 1, acc->List.add(<br key={idx->string_of_int} />))
-    | [Text(txt), ...xs] =>
-      xs->go(idx + 1, acc->List.add(txt->React.string))
-    | [Link(href), ...xs] =>
+    | list{Text(txt), ...xs} =>
+      xs->go(idx + 1, acc->List.add(React.string(txt)))
+    | list{Link(href), ...xs} =>
       xs->go(
         idx + 1,
         acc->List.add(
-          <a key={idx->string_of_int} href> href->React.string </a>,
+          <a key={idx->string_of_int} href> {href->React.string} </a>,
         ),
       )
-    | [DocStyle(style, elems), ...xs] =>
+    | list{DocStyle(style, elems), ...xs} =>
       xs->go(
         idx + 1,
         acc->List.add(
-          <span key={idx->string_of_int} style> {elems->go(0, [])} </span>,
+          <span key={idx->string_of_int} style> {elems->go(0, list{})} </span>,
         ),
       )
     };
-  doc->go(0, []);
+  doc->go(0, list{});
 };
 
 // The react component
-[@react.component]
+@react.component
 let make = (~log: string) => {
   <div> {log->parse->render} </div>;
 };

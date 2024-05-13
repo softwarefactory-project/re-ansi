@@ -4,9 +4,8 @@
         - run-test-command:
             vars:
               test_command:
-                - sudo npm install -g yarn
-                - yarn install
-                - yarn test
+                - npm install
+                - npm run test
             nodeset:
               nodes:
                 - name: container

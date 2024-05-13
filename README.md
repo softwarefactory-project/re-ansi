@@ -71,8 +71,8 @@ Get started by running:
 ```sh
 git clone https://github.com/softwarefactory-project/re-ansi
 cd re-ansi
-yarn install
-yarn start
+npm install
+npm run test
 ```
 
 Then build and run tests with `yarn test`.
@@ -80,6 +80,10 @@ Then build and run tests with `yarn test`.
 Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
+
+### 0.7.0
+
+- Update to rescript version 11.
 
 ### 0.6.0
 
