@@ -28,7 +28,7 @@ Or using yarn:
 yarn add @softwarefactory-project/re-ansi
 ```
 
-Add to your `bsconfig.json`:
+Add to your `rescript.json`:
 
 ```diff
 "bs-dependencies": [
@@ -43,7 +43,7 @@ In reason:
 ```reason
 let log = "green color: \x1b[01m\x1b[01;32mOK\x1b[00m";
 
-[@react.component]
+@react.component
 let make = () => {
   <Ansi log />
 }
@@ -80,6 +80,10 @@ Then build and run tests with `yarn test`.
 Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
+
+### 0.7.1
+
+- Use @rescript/std instead of rescript.
 
 ### 0.7.0
 

@@ -12,5 +12,6 @@
     }
   ],
   "suffix": ".res.js",
-  "bs-dependencies": ["@rescript/react", "@rescript/core"]
+  "bs-dependencies": ["@rescript/react", "@rescript/core"],
+  "external-stdlib" : "@rescript/std"
 }
