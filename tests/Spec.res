@@ -22,7 +22,7 @@ let generateFile = (size: int): string => {
   };
   Random.init(42);
   let rec go = (acc, sz) =>
-    sz > 0 ? acc->Belt.List.add(Random.int(256))->go(sz - 1) : acc;
+    sz > 0 ? acc->List.add(Random.int(256))->go(sz - 1) : acc;
   list{}->go(size)->codePointListToString;
 };
 
@@ -38,7 +38,7 @@ let testParse = (txt, expected) => {
 };
 
 let spec = [
-  generateFile(10000000)->Ansi.parse->Belt.List.length > 0,
+  generateFile(10000000)->Ansi.parse->List.length > 0,
   "Copying blob 15de\r\n\x1b[1A\x1b[JCopied"->testParse([Text("Copied")]),
   "zookeeper: \x1b[4munderlined\x1b[m"
   ->testParse([
@@ -81,6 +81,6 @@ let spec = [
   ->testParse([Text("bright: "), withBrightColor("grey", [Text("test")])]),
 ];
 
-if !(spec->Belt.Array.every(x => x)) {
+if !(spec->Array.every(x => x)) {
   %raw(`process.exit(1)`)
 }

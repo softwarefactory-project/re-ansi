@@ -81,6 +81,11 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
 
+### 0.7.2
+
+- Use a bundle for the published JS library thanks to
+  https://github.com/rescript-lang/rescript-compiler/issues/6754#issuecomment-2153018168
+
 ### 0.7.1
 
 - Use @rescript/std instead of rescript.

@@ -160,7 +160,7 @@ module AnsiCode = {
       ->RegExp.exec(txt)
       ->Option.flatMap(res => res->Array.get(0)
           ->Option.flatMap(url =>
-              (url->Js.String.length, url->HRef->Some)->Some
+              (url->String.length, url->HRef->Some)->Some
             )
         )
       ->Option.getOr((1, None));
@@ -307,7 +307,7 @@ module Document = {
 // Convert a string to a document
 let parse = (txt: string): document => {
   let rec go = (txt: string, acc: list<document>) => {
-    let length = txt->Js.String.length;
+    let length = txt->String.length;
     switch (txt->Document.parse(length, 0)) {
     | (pos, Some(doc)) when pos == length => acc->List.add(doc)
     | (pos, Some(doc)) =>
@@ -315,7 +315,7 @@ let parse = (txt: string): document => {
     | _ => acc
     };
   };
-  txt->go(list{})->Belt.List.reverse->Belt.List.flatten;
+  txt->go(list{})->List.reverse->List.flat;
 };
 
 // Convert a document to a React.element

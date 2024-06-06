@@ -1,14 +1,16 @@
 {
   "name": "@softwarefactory-project/re-ansi",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "ANSI code to HTML",
   "files": [
     "README.md",
     "LICENSE",
     "rescript.json",
-    "src"
+    "src/Ansi.res",
+    "src/Ansi.res.js"
   ],
   "main": "./src/Ansi.res.js",
+  "type": "module",
   "license": "Apache-2.0",
   "homepage": "https://github.com/softwarefactory-project/re-ansi",
   "repository": {
@@ -19,19 +21,18 @@
     "build": "rescript",
     "clean": "rescript clean",
     "dev": "rescript -w",
-    "test": "npm run build && node tests/Spec.res.js"
+    "test": "npm run build && node tests/Spec.res.mjs",
+    "bundle": "npm run clean && npm run build && nanobundle build --clean --no-sourcemap --no-legal-comments --external=react"
   },
   "keywords": [
     "ansi",
     "rescript",
     "react"
   ],
-  "dependencies": {
+  "devDependencies": {
+    "nanobundle": "^2.0.0",
     "@rescript/core": "^1.3.0",
     "@rescript/react": "^0.12.1",
-    "@rescript/std": "^11.1.0"
-  },
-  "devDependencies": {
     "rescript": "^11.1.0"
   }
 }
