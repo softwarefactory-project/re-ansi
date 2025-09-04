@@ -77,6 +77,18 @@ let spec = [
       Link("http://example.com/test"),
       Text(" 200"),
     ]),
+  "get2: [Example text](<https://example.com>)"
+  ->testParse([
+      Text("get2: [Example text](<"),
+      Link("https://example.com"),
+      Text(">)"),
+    ]),
+  "get3: [Example text](https://example.com)"
+  ->testParse([
+      Text("get3: [Example text]("),
+      Link("https://example.com"),
+      Text(")"),
+    ]),
   "bright: \x1b[90mtest\x1b[m"
   ->testParse([Text("bright: "), withBrightColor("grey", [Text("test")])]),
 ];
