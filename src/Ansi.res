@@ -153,7 +153,7 @@ module AnsiCode = {
 
   // Link management
   module HttpLink = {
-    let linkRe = RegExp.fromString("^(http(s)?:\\/\\/[^\\s]+)");
+    let linkRe = RegExp.fromString("^(http(s)?:\\/\\/[^\\)>\\s]+)");
 
     let get = (txt: string): parser<code> =>
       linkRe
