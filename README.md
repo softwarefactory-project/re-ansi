@@ -81,6 +81,10 @@ Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
 ## Changes
 
+### 0.7.3
+
+- Better parse url.
+
 ### 0.7.2
 
 - Use a bundle for the published JS library thanks to
