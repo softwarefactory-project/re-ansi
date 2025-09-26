@@ -79,7 +79,18 @@ Then build and run tests with `yarn test`.
 
 Make sure to read about [React][reason-react] and [Reason][rescript-lang] too.
 
+To make a release:
+
+- Update the version number in packages.json
+- Run `npm run build && npm run bundle`
+- Then: `npm publish`
+- Tag and push the commit
+
 ## Changes
+
+### 0.7.4
+
+- Add the missing `Ansi.res.js` to the release.
 
 ### 0.7.3
 
