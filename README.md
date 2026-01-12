@@ -88,6 +88,10 @@ To make a release:
 
 ## Changes
 
+### 0.7.5
+
+- Fix link parsing when escape sequences at end of URL.
+
 ### 0.7.4
 
 - Add the missing `Ansi.res.js` to the release.
