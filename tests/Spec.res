@@ -32,7 +32,7 @@ let testParse = (txt, expected) => {
     ? true
     : {
       Js.log3(txt, "!=", expected);
-      Js.log2("got", parsed);
+      Js.log2("got", parsed->List.toArray);
       false;
     };
 };
@@ -88,6 +88,12 @@ let spec = [
       Text("get3: [Example text]("),
       Link("https://example.com"),
       Text(")"),
+  ]),
+  "get3: https://example.com\x1b[m"
+  ->testParse([
+      Text("get3: "),
+      Link("https://example.com"),
+      Text(""),
     ]),
   "bright: \x1b[90mtest\x1b[m"
   ->testParse([Text("bright: "), withBrightColor("grey", [Text("test")])]),
