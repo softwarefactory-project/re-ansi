@@ -78,6 +78,20 @@ module AnsiCode = {
   let addStyle = fontStyle => ReactDOM.Style.make(~fontStyle, ());
   let addDecoration = textDecoration => ReactDOM.Style.make(~textDecoration, ());
   let int_of_cp = c => c - 48;
+  let int_of_3bcd = (d3, d2, d1) => d3->int_of_cp * 100 + d2->int_of_cp * 10 + d1->int_of_cp;
+
+  // 256 Colors
+  module Color256 = {
+    let get = (colorMode: int, colorValue: int): option<code> =>
+        colorValue->AnsiColors.heightBitColors->Option.flatMap(color =>
+          switch (colorMode->int_of_cp) {
+          | 3 => ReactDOM.Style.make(~color, ())->Style->Some
+          | 4 => ReactDOM.Style.make(~background=color, ())->Style->Some
+          | _ =>
+            Js.log3("Unknown 256color code:", colorMode, colorValue);
+            None;
+        })
+  }
 
   // Color management
   module ColorCss = {
@@ -237,7 +251,13 @@ module AnsiCode = {
               | None => colorCss->Style->Some
               }
             ),
-        )
+      )
+      // [_8;5;_m
+      | [91, fgbg, 56, 59, 53, 59, c1] => (length, Color256.get(fgbg, c1->int_of_cp))
+      // [_8;5;__m
+      | [91, fgbg, 56, 59, 53, 59, c2, c1] => (length, Color256.get(fgbg, int_of_3bcd(0, c2, c1)))
+      // [_8;5;___m
+      | [91, fgbg, 56, 59, 53, 59, c3, c2, c1] => (length, Color256.get(fgbg, int_of_3bcd(c3, c2, c1)))
       // [0_;__;__m]
       | [91, 48, style, 59, cm1, cv1, 59, cm2, cv2] as xs
       // [_;__;__m
