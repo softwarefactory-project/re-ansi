@@ -88,6 +88,10 @@ To make a release:
 
 ## Changes
 
+### 0.7.6
+
+- Add support for 256 colors mode.
+
 ### 0.7.5
 
 - Fix link parsing when escape sequences at end of URL.
