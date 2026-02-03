@@ -46,7 +46,13 @@ let spec = [
       withDecoration("underline", [Text("underlined")]),
     ]),
   "bold: \x1b[1mtest\x1b[m over"
-  ->testParse([Text("bold: "), withFont("bold", [Text("test")]), Text(" over")]),
+    ->testParse([Text("bold: "), withFont("bold", [Text("test")]), Text(" over")]),
+  "\x1b[38;5;232mbla"
+  ->testParse([Text(""), withColor("#080808", [Text("bla")])]),
+  "\x1b[38;5;243mmid"
+  ->testParse([Text(""), withColor("#767676", [Text("mid")])]),
+  "\x1b[38;5;255mbri"
+  ->testParse([Text(""), withColor("#eeeeee", [Text("bri")])]),
   "a\x1b[0Kb"
   ->testParse([Text("b")]),
   "a\x1b[Kb"
