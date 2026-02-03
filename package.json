@@ -1,13 +1,14 @@
 {
   "name": "@softwarefactory-project/re-ansi",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "ANSI code to HTML",
   "files": [
     "README.md",
     "LICENSE",
     "rescript.json",
     "src/Ansi.res",
-    "src/Ansi.res.js"
+    "src/Ansi.res.js",
+    "src/AnsiColors.res"
   ],
   "main": "./src/Ansi.res.js",
   "type": "module",
